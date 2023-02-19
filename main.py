@@ -56,12 +56,28 @@ def all_games():
         GAMES.append({
             'id': uuid.uuid4().hex,
             'title': request.get_json().get('title'),
-            'genre': request.get_json().get('title'),
-            'played': request.get_json().get('title')
+            'genre': request.get_json().get('genre'),
+            'played': request.get_json().get('played')
         })
         response_object['message'] = 'Game Added!'
     else:
         response_object['games'] = GAMES
+
+    return jsonify(response_object)
+
+
+@app.route("/games/<games_id>", methods=['PUT'])
+def single_game(game_id):
+    response_object = {'status': 'success'}
+    if request.method == "PUT":
+        # remove_game(game_id)
+        GAMES.append({
+            'id': uuid.uuid4().hex,
+            'title': request.get_json().get('title'),
+            'genre': request.get_json().get('genre'),
+            'played': request.get_json().get('played')
+        })
+        response_object['message'] = 'Game Updated!'
 
     return jsonify(response_object)
 
