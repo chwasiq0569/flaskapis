@@ -12,31 +12,37 @@ CORS(app, resources={r"/*": {'origins': 'http://localhost:8080',
 
 GAMES = [
     {
+        "id": uuid.uuid4().hex,
         "title": '2k21',
         "genre": 'Sports',
         "played": "Yes"
     },
     {
+        "id": uuid.uuid4().hex,
         "title": 'Evil Within',
         "genre": 'Horror',
         "played": "No"
     },
     {
+        "id": uuid.uuid4().hex,
         "title": 'The Last of Us',
         "genre": 'Horror',
         "played": "Yes"
     },
     {
+        "id": uuid.uuid4().hex,
         "title": 'Days Gone',
         "genre": 'Horror/Survival',
         "played": "No"
     },
     {
+        "id": uuid.uuid4().hex,
         "title": 'Mario',
         "genre": 'Retro',
         "played": "Yes"
     },
     {
+        "id": uuid.uuid4().hex,
         "title": 'God of War',
         "genre": 'Action',
         "played": "Yes"
@@ -66,20 +72,35 @@ def all_games():
     return jsonify(response_object)
 
 
-@app.route("/games/<games_id>", methods=['PUT'])
+# The PUT and DELETE route handler
+@app.route('/games/<game_id>', methods=['PUT', 'DELETE'])
 def single_game(game_id):
+    print('xa', request.args.get('game_id'))
     response_object = {'status': 'success'}
     if request.method == "PUT":
-        # remove_game(game_id)
+        post_data = request.get_json()
+        remove_game(game_id)
         GAMES.append({
             'id': uuid.uuid4().hex,
-            'title': request.get_json().get('title'),
-            'genre': request.get_json().get('genre'),
-            'played': request.get_json().get('played')
+            'title': post_data.get('title'),
+            'genre': post_data.get('genre'),
+            'played': post_data.get('played')
         })
         response_object['message'] = 'Game Updated!'
-
+    if request.method == "DELETE":
+        remove_game(game_id)
+        response_object['message'] = 'Game removed!'
     return jsonify(response_object)
+
+
+# Removing the game to update / delete
+def remove_game(game_id):
+    for game in GAMES:
+        print(game)
+        if game['id'] == game_id:
+            GAMES.remove(game)
+            return True
+    return False
 
 
 if __name__ == "__main__":
